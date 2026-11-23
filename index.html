@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b16">
+  <meta name="description" content="DiamondX BD — Free Fire Diamond Top-up">
+  <title>DiamondX BD | Free Fire Top-up</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="DiamondX BD home"><span class="brand-mark">X</span><span>DIAMOND<span class="accent">X</span> <small>BD</small></span></a>
+    <a class="help-link" href="#order">অর্ডার করুন <span>↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow"><i></i> BANGLADESH FREE FIRE TOP-UP</span>
+        <h1>আপনার গেম,<br><span class="gradient-text">আপনার জয়।</span></h1>
+        <p>সহজে Free Fire ডায়মন্ড টপ-আপের জন্য আপনার বিশ্বস্ত গন্তব্য। প্যাকেজ বেছে নিয়ে অর্ডারের অনুরোধ পাঠান।</p>
+        <a class="primary-btn" href="#packages">প্যাকেজ দেখুন <span>↓</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="diamond">◆</div><div class="art-caption">LEVEL UP<br><b>YOUR GAME</b></div>
+      </div>
+    </section>
+
+    <section class="trust-row" aria-label="সুবিধা">
+      <div><b>01</b><span>সহজ অর্ডার</span></div>
+      <div><b>02</b><span>Player ID ভিত্তিক</span></div>
+      <div><b>03</b><span>সাপোর্ট সহায়তা</span></div>
+    </section>
+
+    <section class="section" id="packages">
+      <div class="section-heading"><div><span class="eyebrow">CHOOSE YOUR TOP-UP</span><h2>ডায়মন্ড প্যাকেজ</h2></div><span class="section-note">আপনার পছন্দের প্যাকেজ বেছে নিন</span></div>
+      <div class="package-grid" id="packageGrid"></div>
+    </section>
+
+    <section class="order-section" id="order">
+      <div class="order-intro"><span class="eyebrow">PLACE AN ORDER</span><h2>অর্ডারের তথ্য দিন</h2><p>সঠিক Player ID ও প্যাকেজ নির্বাচন করুন।</p><div class="notice"><b>নোট:</b> সাইটটি এখন প্রাথমিক ডেমো। লাইভ অর্ডার, পেমেন্ট ও অ্যাডমিন প্যানেল এখনো চালু হয়নি।</div></div>
+      <form id="orderForm" class="order-form">
+        <label>Free Fire Player ID<input id="playerId" name="playerId" inputmode="numeric" placeholder="আপনার Player ID লিখুন" required></label>
+        <label>প্যাকেজ নির্বাচন করুন<select id="packageSelect" name="package" required><option value="">প্রথমে প্যাকেজ বেছে নিন</option></select></label>
+        <label>পেমেন্ট মাধ্যম<select id="paymentMethod" name="payment" required><option value="">নির্বাচন করুন</option><option>bKash</option><option>Nagad</option><option>Rocket</option></select></label>
+        <label>আপনার যোগাযোগ নম্বর<input id="phone" name="phone" inputmode="tel" placeholder="01XXXXXXXXX" required></label>
+        <button class="primary-btn submit-btn" type="submit">অর্ডারের বিবরণ তৈরি করুন <span>→</span></button>
+        <p class="form-foot">এখনো কোনো টাকা পাঠাবেন না। পেমেন্ট নির্দেশনা চালু হলে এখানে জানানো হবে।</p>
+      </form>
+    </section>
+    <section class="result-card" id="orderResult" hidden aria-live="polite"></section>
+  </main>
+
+  <footer><a class="brand footer-brand" href="#"><span class="brand-mark">X</span><span>DIAMOND<span class="accent">X</span> <small>BD</small></span></a><p>© <span id="year"></span> DiamondX BD. All rights reserved.</p><span class="footer-tag">GAME ON. GLOW ON.</span></footer>
+  <script src="script.js"></script>
+</body>
+</html>
