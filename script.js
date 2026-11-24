@@ -6,7 +6,10 @@ const packages = [
   {id:"355",diamonds:"355 Diamonds",note:"Plus Pack"},
   {id:"480",diamonds:"480 Diamonds",note:"Mega Pack"},
   {id:"610",diamonds:"610 Diamonds",note:"Pro Pack"},
-  {id:"1240",diamonds:"1240 Diamonds",note:"Ultimate Pack"}
+  {id:"1240",diamonds:"1240 Diamonds",note:"Ultimate Pack"},
+  {id:"weekly",diamonds:"Weekly Membership",note:"সাপ্তাহিক মেম্বারশিপ"},
+  {id:"monthly",diamonds:"Monthly Membership",note:"মাসিক মেম্বারশিপ"},
+  {id:"levelup",diamonds:"Level Up Pass",note:"লেভেল আপ পাস"}
 ];
 const grid=document.getElementById("packageGrid");
 const select=document.getElementById("packageSelect");
