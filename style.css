@@ -167,3 +167,5 @@ footer{border-top:1px solid var(--line);padding:25px 0;display:flex;align-items:
 .order-modal .order-form{gap:13px}
 .order-modal .submit-btn{width:100%}
 .order-modal .form-foot{margin-top:0}
+
+.google-login-btn{width:100%;margin-top:2px;border-color:#777;background:#ffffff08;color:#f7f2e8}.google-login-btn:hover{background:#ffffff12}
