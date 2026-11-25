@@ -190,7 +190,7 @@
       await refreshAuth(data.user);closeModal("loginModal");
       if(pendingProductId){select.value=pendingProductId;openModal("orderModal");}
     }else{
-      $("authMessage").textContent="অ্যাকাউন্ট তৈরি হয়েছে, কিন্তু ইমেইল Confirm না হওয়া পর্যন্ত লগইন হবে না। Supabase-এর confirmation email inbox/Spam দেখুন।";
+      $("authMessage").textContent="অ্যাকাউন্ট তৈরি হয়েছে। যদি লগইন না হয়, Supabase-এ Email Confirmation বন্ধ আছে কি না দেখুন।";
     }
   });
 
