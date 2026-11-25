@@ -80,7 +80,7 @@
       if(!error && data && data.role==="admin") isAdmin=true;
     }
     $("adminPanel").hidden=!isAdmin;
-    if(isAdmin) { await loadAdminOrders(); fillEditOptions(); }
+    if(isAdmin) { await loadAdminOrders(); fillEditOptions(); }\n    if(currentUser) await loadOrderHistory();
   }
 
   async function loadAdminOrders() {
@@ -128,7 +128,7 @@
     if(!email||password.length<6){$("authMessage").textContent="ইমেইল দিন এবং কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড লিখুন।";return;}
     const {data,error}=await db.auth.signUp({email,password});
     $("authMessage").textContent=error?"অ্যাকাউন্ট তৈরি হয়নি: "+error.message:"অ্যাকাউন্ট তৈরি হয়েছে। ইমেইল confirmation চালু থাকলে inbox যাচাই করুন।";
-    if(data.user) await refreshAuth(data.session?data.user:null);
+    if(data.user && data.session){await refreshAuth(data.user);closeModal("loginModal");}
   });
 
   $("logoutBtn").addEventListener("click",async()=>{
@@ -187,7 +187,30 @@
     await loadProducts();
   });
 
-  $("year").textContent=new Date().getFullYear();
+
+  function openModal(id){const modal=$(id);if(modal){modal.hidden=false;document.body.classList.add("modal-open");}}
+  function closeModal(id){const modal=$(id);if(modal){modal.hidden=true;if(!document.querySelector(".modal-backdrop:not([hidden])"))document.body.classList.remove("modal-open");}}
+  $("openLoginBtn").addEventListener("click",()=>openModal("loginModal"));
+  $("openProfileBtn").addEventListener("click",()=>{openModal("profileModal");if(currentUser)loadOrderHistory();});
+  document.querySelectorAll("[data-close-modal]").forEach(btn=>btn.addEventListener("click",()=>closeModal(btn.dataset.closeModal)));
+  document.querySelectorAll(".modal-backdrop").forEach(backdrop=>backdrop.addEventListener("click",event=>{if(event.target===backdrop)closeModal(backdrop.id);}));
+  document.addEventListener("keydown",event=>{if(event.key==="Escape")document.querySelectorAll(".modal-backdrop:not([hidden])").forEach(m=>closeModal(m.id));});
+  $("addBalanceBtn").addEventListener("click",()=>{$("walletMessage").textContent="ওয়ালেট টপ-আপের জন্য নিরাপদ পেমেন্ট ও Admin approval ব্যবস্থা পরের ধাপে যুক্ত করা হবে।";});
+  async function loadOrderHistory(){
+    if(!currentUser)return;
+    const box=$("orderHistory");box.textContent="অর্ডার লোড হচ্ছে…";
+    const {data,error}=await db.from("orders").select("id,product_name,price,status,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(50);
+    if(error){box.textContent="অর্ডার হিস্টোরি পাওয়া যায়নি: "+error.message;return;}
+    const orders=data||[],completed=orders.filter(o=>o.status==="completed");
+    $("completedCount").textContent=completed.length+"টি সম্পন্ন";
+    if(!orders.length){box.innerHTML='<div class="history-empty">এখনো কোনো অর্ডার করেননি।</div>';return;}
+    box.innerHTML="";
+    orders.forEach(o=>{const item=document.createElement("div");item.className="history-item";
+      item.innerHTML='<strong>'+escapeHtml(o.product_name||"Diamond package")+'</strong><br><span class="status-pill">'+escapeHtml(statusText(o.status))+'</span><br>মূল্য: '+escapeHtml(bdt(o.price))+'<br><small>'+escapeHtml(new Date(o.created_at).toLocaleString("bn-BD"))+'</small>';
+      box.appendChild(item);
+    });
+  }
+\n  $("year").textContent=new Date().getFullYear();
   if(!clientReady) {
     $("productStatus").textContent="Supabase key সেট করা বাকি";
     grid.innerHTML='<div class="notice">Supabase সংযোগ চালু করতে GitHub-এর config.js ফাইলে Publishable/anon key বসাতে হবে।</div>';
