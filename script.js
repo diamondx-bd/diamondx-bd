@@ -109,12 +109,15 @@
     });
   }
 
+  let pendingProductId=null;
   grid.addEventListener("click",event=>{
     const button=event.target.closest("button[data-product]"); if(!button)return;
-    select.value=button.dataset.product;
+    pendingProductId=button.dataset.product;
+    select.value=pendingProductId;
     document.querySelectorAll(".package").forEach(c=>c.classList.remove("selected"));
     button.closest(".package").classList.add("selected");
-    $("order").scrollIntoView({behavior:"smooth"});
+    if(!currentUser){openModal("loginModal");$("authMessage").textContent="অর্ডার করতে আগে লগইন করুন অথবা নতুন অ্যাকাউন্ট তৈরি করুন।";return;}
+    openModal("orderModal");
   });
 
   $("forgotPasswordBtn").addEventListener("click",async()=>{
@@ -124,7 +127,10 @@
     $("authMessage").textContent="পাসওয়ার্ড রিসেট ইমেইল পাঠানো হচ্ছে…";
     const redirectTo=window.location.origin+window.location.pathname;
     const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo});
-    $("authMessage").textContent=error?"রিসেট ইমেইল পাঠানো যায়নি: "+error.message:"যদি এই ইমেইলে অ্যাকাউন্ট থাকে, তাহলে পাসওয়ার্ড রিসেটের লিংক পাঠানো হয়েছে। Inbox ও Spam ফোল্ডার দেখুন।";
+    const msg=error?.message||"";
+    $("authMessage").textContent=error
+      ?(/rate limit|too many requests/i.test(msg)?"ইমেইল পাঠানোর সীমা শেষ (429)। Supabase-এর ইমেইল লিমিট/SMTP ঠিক না হওয়া পর্যন্ত Reset email যাবে না।":"রিসেট ইমেইল পাঠানো যায়নি: "+msg)
+      :"যদি এই ইমেইলে অ্যাকাউন্ট থাকে, তাহলে রিসেট লিংক পাঠানো হয়েছে। Inbox ও Spam দেখুন।";
   });
 
   $("resetPasswordForm").addEventListener("submit",async event=>{
@@ -145,19 +151,48 @@
     if(!clientReady){$("authMessage").textContent="প্রথমে config.js-এ Supabase Publishable/anon key বসাতে হবে।";return;}
     const email=$("authEmail").value.trim(), password=$("authPassword").value;
     $("authMessage").textContent="লগইন হচ্ছে…";
+    const button=$("authForm").querySelector('button[type="submit"]');
+    button.disabled=true;button.textContent="লগইন হচ্ছে…";
     const {data,error}=await db.auth.signInWithPassword({email,password});
-    if(error){$("authMessage").textContent="লগইন হয়নি: "+error.message;return;}
+    button.disabled=false;button.textContent="ইমেইল দিয়ে লগইন";
+    if(error){
+      const msg=error.message||"";
+      $("authMessage").textContent=/email not confirmed/i.test(msg)
+        ?"এই ইমেইলটি এখনো Confirm হয়নি। Supabase থেকে confirmation email পাঠানো/confirm করা প্রয়োজন।"
+        :/invalid login credentials/i.test(msg)
+        ?"ইমেইল বা পাসওয়ার্ড ভুল, অথবা অ্যাকাউন্টটি এখনো Confirm হয়নি।"
+        :"লগইন হয়নি: "+msg;
+      return;
+    }
     $("authMessage").textContent="লগইন সফল।";
     await refreshAuth(data.user);
+    closeModal("loginModal");
+    if(pendingProductId){select.value=pendingProductId;openModal("orderModal");}
   });
 
   $("signupBtn").addEventListener("click",async()=>{
     if(!clientReady){$("authMessage").textContent="প্রথমে config.js-এ Supabase Publishable/anon key বসাতে হবে।";return;}
     const email=$("authEmail").value.trim(), password=$("authPassword").value;
     if(!email||password.length<6){$("authMessage").textContent="ইমেইল দিন এবং কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড লিখুন।";return;}
-    const {data,error}=await db.auth.signUp({email,password});
-    $("authMessage").textContent=error?"অ্যাকাউন্ট তৈরি হয়নি: "+error.message:"অ্যাকাউন্ট তৈরি হয়েছে। ইমেইল confirmation চালু থাকলে inbox যাচাই করুন।";
-    if(data.user && data.session){await refreshAuth(data.user);closeModal("loginModal");}
+    const signupButton=$("signupBtn");
+    signupButton.disabled=true;signupButton.textContent="অ্যাকাউন্ট তৈরি হচ্ছে…";
+    const redirectTo=window.location.origin+window.location.pathname;
+    const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:redirectTo}});
+    signupButton.disabled=false;signupButton.textContent="নতুন অ্যাকাউন্ট";
+    if(error){
+      const msg=error.message||"";
+      $("authMessage").textContent=/rate limit|too many requests/i.test(msg)
+        ?"Supabase ইমেইল পাঠানোর সীমা শেষ (429)। বারবার চেষ্টা করবেন না; কিছুক্ষণ অপেক্ষা করুন বা Supabase-এ SMTP সেটআপ করতে হবে।"
+        :"অ্যাকাউন্ট তৈরি হয়নি: "+msg;
+      return;
+    }
+    if(data.user && data.session){
+      $("authMessage").textContent="অ্যাকাউন্ট তৈরি ও লগইন সফল।";
+      await refreshAuth(data.user);closeModal("loginModal");
+      if(pendingProductId){select.value=pendingProductId;openModal("orderModal");}
+    }else{
+      $("authMessage").textContent="অ্যাকাউন্ট তৈরি হয়েছে, কিন্তু ইমেইল Confirm না হওয়া পর্যন্ত লগইন হবে না। Supabase-এর confirmation email inbox/Spam দেখুন।";
+    }
   });
 
   $("logoutBtn").addEventListener("click",async()=>{
@@ -183,7 +218,8 @@
     result.hidden=false;
     result.innerHTML='<h3>অর্ডার জমা হয়েছে!</h3>Order ID: <b>'+escapeHtml(data.id)+'</b><br>প্যাকেজ: '+escapeHtml(product.name)+'<br>মূল্য: '+escapeHtml(bdt(product.price))+'<br>Status: Pending<p>Admin অর্ডার যাচাই করে আপডেট করবেন।</p>';
     result.scrollIntoView({behavior:"smooth"});
-    $("orderForm").reset(); await loadWallet(); await loadOrderHistory();
+    closeModal("orderModal");
+    $("orderForm").reset(); pendingProductId=null; await loadWallet(); await loadOrderHistory();
   });
 
   $("editProduct").addEventListener("change",()=>{
