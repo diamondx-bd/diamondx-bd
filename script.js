@@ -9,9 +9,9 @@
   let db = null, currentUser = null, isAdmin = false, products = [], selectedCategory = "all";
 
   const defaultProducts = [
-    ["25 Diamonds","diamond",25],["50 Diamonds","diamond",50],["115 Diamonds","diamond",115],
-    ["240 Diamonds","diamond",240],["355 Diamonds","diamond",355],["480 Diamonds","diamond",480],
-    ["610 Diamonds","diamond",610],["1240 Diamonds","diamond",1240],
+    ["25 Diamonds","diamond",25,25],["50 Diamonds","diamond",50,40],["115 Diamonds","diamond",115,85],
+    ["240 Diamonds","diamond",240,160],["355 Diamonds","diamond",355,240],["480 Diamonds","diamond",480,320],
+    ["610 Diamonds","diamond",610,400],["1240 Diamonds","diamond",1240,800],
     ["PUBG 60 UC","pubg",60],["PUBG 325 UC","pubg",325],["PUBG 660 UC","pubg",660],
     ["Weekly Membership","subscription",null],["Monthly Membership","subscription",null],["Level Up Pass","pass",null]
   ];
@@ -188,7 +188,7 @@
   $("seedProducts").addEventListener("click",async()=>{
     if(!isAdmin){setAdminMessage("শুধু Admin এই কাজ করতে পারবেন।");return;}
     const existing=new Set(products.map(p=>p.name.toLowerCase()));
-    const rows=defaultProducts.filter(p=>!existing.has(p[0].toLowerCase())).map((p,i)=>({name:p[0],category:p[1],diamonds:p[2],price:0,is_active:false,sort_order:products.length+i+1}));
+    const rows=defaultProducts.filter(p=>!existing.has(p[0].toLowerCase())).map((p,i)=>({name:p[0],category:p[1],diamonds:p[2],price:p[3]??0,is_active:false,sort_order:products.length+i+1}));
     if(!rows.length){setAdminMessage("প্রাথমিক প্যাকেজগুলো ইতিমধ্যে আছে।");return;}
     const {error}=await db.from("products").insert(rows);
     if(error){setAdminMessage("প্যাকেজ তৈরি হয়নি: "+error.message);return;}
