@@ -62,8 +62,16 @@
       <form id="authForm" class="order-form">
         <label>ইমেইল<input id="authEmail" type="email" autocomplete="email" placeholder="আপনার ইমেইল" required></label>
         <label>পাসওয়ার্ড<input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="পাসওয়ার্ড" required></label>
-        <div class="auth-buttons"><button class="primary-btn" type="submit">লগইন</button><button class="secondary-btn" type="button" id="signupBtn">নতুন অ্যাকাউন্ট</button></div>
-        <p class="form-foot" id="authMessage">ইমেইল দিয়ে লগইন করুন অথবা নতুন অ্যাকাউন্ট তৈরি করুন।</p>
+        <div class="auth-buttons"><button class="primary-btn" type="submit">ইমেইল দিয়ে লগইন</button><button class="secondary-btn" type="button" id="signupBtn">নতুন অ্যাকাউন্ট</button></div>
+        <button class="text-button" type="button" id="forgotPasswordBtn">পাসওয়ার্ড ভুলে গেছেন?</button>
+        <p class="form-foot" id="authMessage">ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন অথবা নতুন অ্যাকাউন্ট তৈরি করুন।</p>
+      </form>
+      <form id="resetPasswordForm" class="order-form" hidden>
+        <h3 id="resetPasswordTitle">নতুন পাসওয়ার্ড সেট করুন</h3>
+        <label>নতুন পাসওয়ার্ড<input id="newPassword" type="password" autocomplete="new-password" minlength="6" placeholder="কমপক্ষে ৬ অক্ষর" required></label>
+        <label>পাসওয়ার্ড আবার লিখুন<input id="confirmNewPassword" type="password" autocomplete="new-password" minlength="6" placeholder="পাসওয়ার্ড নিশ্চিত করুন" required></label>
+        <button class="primary-btn" type="submit">পাসওয়ার্ড পরিবর্তন করুন</button>
+        <p class="form-foot" id="resetPasswordMessage"></p>
       </form>
     </section>
   </div>
