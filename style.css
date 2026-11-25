@@ -154,3 +154,9 @@ footer{border-top:1px solid var(--line);padding:25px 0;display:flex;align-items:
 #adminTopups,#adminCodes{max-height:440px;overflow:auto;padding-right:3px}
 #codeForm{margin-top:12px}
 .wallet-add .form-foot{margin-top:7px;line-height:1.6}
+
+/* Password recovery controls */
+.text-button{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;padding:10px 2px;border:0;background:transparent;color:var(--gold-light);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer}
+#resetPasswordForm{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+#resetPasswordForm[hidden]{display:none}
+#authForm[hidden]{display:none}
