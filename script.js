@@ -176,8 +176,7 @@
     if(!email||password.length<6){$("authMessage").textContent="ইমেইল দিন এবং কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড লিখুন।";return;}
     const signupButton=$("signupBtn");
     signupButton.disabled=true;signupButton.textContent="অ্যাকাউন্ট তৈরি হচ্ছে…";
-    const redirectTo=window.location.origin+window.location.pathname;
-    const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:redirectTo}});
+    const {data,error}=await db.auth.signUp({email,password});
     signupButton.disabled=false;signupButton.textContent="নতুন অ্যাকাউন্ট";
     if(error){
       const msg=error.message||"";
