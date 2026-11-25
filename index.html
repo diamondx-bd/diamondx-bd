@@ -11,7 +11,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#" aria-label="DiamondX BD home"><span class="brand-mark">X</span><span>DIAMOND<span class="accent">X</span> <small>BD</small></span></a>
-    <a class="help-link" href="#order">অর্ডার করুন <span>↗</span></a>
+    <div class="header-actions"><a class="help-link" href="#order">অর্ডার করুন <span>↗</span></a><a class="help-link" href="#account">লগইন</a></div>
   </header>
 
   <main>
@@ -35,25 +35,65 @@
     </section>
 
     <section class="section" id="packages">
-      <div class="section-heading"><div><span class="eyebrow">CHOOSE YOUR TOP-UP</span><h2>ডায়মন্ড প্যাকেজ</h2></div><span class="section-note">আপনার পছন্দের প্যাকেজ বেছে নিন</span></div>
+      <div class="section-heading"><div><span class="eyebrow">CHOOSE YOUR TOP-UP</span><h2>ডায়মন্ড প্যাকেজ</h2></div><span class="section-note" id="productStatus">প্যাকেজ লোড হচ্ছে…</span></div>
       <div class="package-grid" id="packageGrid"></div>
-    </section>
+  </section>
 
-    <section class="order-section" id="order">
-      <div class="order-intro"><span class="eyebrow">PLACE AN ORDER</span><h2>অর্ডারের তথ্য দিন</h2><p>সঠিক Player ID ও প্যাকেজ নির্বাচন করুন।</p><div class="notice"><b>নোট:</b> সাইটটি এখন প্রাথমিক ডেমো। লাইভ অর্ডার, পেমেন্ট ও অ্যাডমিন প্যানেল এখনো চালু হয়নি।</div></div>
-      <form id="orderForm" class="order-form">
-        <label>Free Fire Player ID<input id="playerId" name="playerId" inputmode="numeric" placeholder="আপনার Player ID লিখুন" required></label>
-        <label>প্যাকেজ নির্বাচন করুন<select id="packageSelect" name="package" required><option value="">প্রথমে প্যাকেজ বেছে নিন</option></select></label>
-        <label>পেমেন্ট মাধ্যম<select id="paymentMethod" name="payment" required><option value="">নির্বাচন করুন</option><option>bKash</option><option>Nagad</option><option>Rocket</option></select></label>
-        <label>আপনার যোগাযোগ নম্বর<input id="phone" name="phone" inputmode="tel" placeholder="01XXXXXXXXX" required></label>
-        <button class="primary-btn submit-btn" type="submit">অর্ডারের বিবরণ তৈরি করুন <span>→</span></button>
-        <p class="form-foot">এখনো কোনো টাকা পাঠাবেন না। পেমেন্ট নির্দেশনা চালু হলে এখানে জানানো হবে।</p>
+  <section class="order-section" id="order">
+    <div class="order-intro"><span class="eyebrow">PLACE AN ORDER</span><h2>অর্ডারের তথ্য দিন</h2><p>অর্ডার পাঠাতে প্রথমে আপনার অ্যাকাউন্টে লগইন করুন।</p><div class="notice"><b>পেমেন্ট নিরাপত্তা:</b> ওয়েবসাইটে পেমেন্ট নির্দেশনা প্রকাশ না করা পর্যন্ত টাকা পাঠাবেন না।</div></div>
+    <form id="orderForm" class="order-form">
+      <label>Free Fire Player ID<input id="playerId" name="playerId" inputmode="numeric" placeholder="আপনার Player ID লিখুন" required></label>
+      <label>প্যাকেজ নির্বাচন করুন<select id="packageSelect" name="package" required><option value="">প্রথমে প্যাকেজ বেছে নিন</option></select></label>
+      <label>পেমেন্ট মাধ্যম<select id="paymentMethod" name="payment" required><option value="">নির্বাচন করুন</option><option>bKash</option><option>Nagad</option><option>Rocket</option></select></label>
+      <label>Transaction ID (পেমেন্ট করার পরে)<input id="transactionId" name="transactionId" placeholder="Transaction ID (ঐচ্ছিক)"></label>
+      <label>আপনার যোগাযোগ নম্বর<input id="phone" name="phone" inputmode="tel" placeholder="01XXXXXXXXX" required></label>
+      <button class="primary-btn submit-btn" type="submit">অর্ডার পাঠান <span>→</span></button>
+      <p class="form-foot">অর্ডার পাঠালে সেটি Pending হিসেবে Admin-এর কাছে যাবে।</p>
+    </form>
+  </section>
+  <section class="result-card" id="orderResult" hidden aria-live="polite"></section>
+
+  <section class="section account-section" id="account">
+    <div class="section-heading"><div><span class="eyebrow">ACCOUNT</span><h2>লগইন / অ্যাকাউন্ট</h2></div><span id="authState" class="section-note">লগইন করা হয়নি</span></div>
+    <div class="account-box">
+      <form id="authForm" class="order-form">
+        <label>ইমেইল<input id="authEmail" type="email" autocomplete="email" placeholder="আপনার ইমেইল" required></label>
+        <label>পাসওয়ার্ড<input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="কমপক্ষে ৬ অক্ষর" required></label>
+        <div class="auth-buttons"><button class="primary-btn" type="submit">লগইন</button><button class="secondary-btn" type="button" id="signupBtn">নতুন অ্যাকাউন্ট</button><button class="secondary-btn" type="button" id="logoutBtn" hidden>লগআউট</button></div>
+        <p class="form-foot" id="authMessage">নিজের অ্যাকাউন্ট দিয়ে লগইন করুন। Admin হলে Admin Panel দেখা যাবে।</p>
       </form>
-    </section>
-    <section class="result-card" id="orderResult" hidden aria-live="polite"></section>
+    </div>
+  </section>
+
+  <section class="section admin-section" id="adminPanel" hidden>
+    <div class="section-heading"><div><span class="eyebrow">ADMIN CONTROL</span><h2>Admin Dashboard</h2></div><span class="section-note">শুধু Admin</span></div>
+    <div class="admin-grid">
+      <div class="admin-box">
+        <h3>প্যাকেজ যোগ / আপডেট</h3>
+        <form id="productForm" class="order-form">
+          <label>বিদ্যমান প্যাকেজ (আপডেট করতে)<select id="editProduct"><option value="">নতুন প্যাকেজ তৈরি</option></select></label>
+          <label>প্যাকেজের নাম<input id="productName" required placeholder="যেমন: 100 Diamonds"></label>
+          <label>ধরন<select id="productCategory"><option value="diamond">Diamond</option><option value="membership">Membership</option><option value="pass">Level Up Pass</option></select></label>
+          <label>ডায়মন্ড সংখ্যা (Membership/Pass হলে ফাঁকা)<input id="productDiamonds" type="number" min="0" placeholder="100"></label>
+          <label>দাম (BDT)<input id="productPrice" type="number" min="0" step="1" required placeholder="৳"></label>
+          <label class="check-label"><input id="productActive" type="checkbox" checked> প্যাকেজ চালু থাকবে</label>
+          <button class="primary-btn" type="submit">প্যাকেজ সেভ করুন</button>
+          <button class="secondary-btn" type="button" id="seedProducts">প্রাথমিক ১১টি প্যাকেজ যোগ করুন</button>
+          <p class="form-foot" id="adminMessage"></p>
+        </form>
+      </div>
+      <div class="admin-box">
+        <h3>সাম্প্রতিক অর্ডার</h3>
+        <div id="adminOrders" class="admin-orders">অর্ডার লোড হচ্ছে…</div>
+      </div>
+    </div>
+  </section>
+  <div class="result-card" id="siteMessage" hidden aria-live="polite"></div>
   </main>
 
   <footer><a class="brand footer-brand" href="#"><span class="brand-mark">X</span><span>DIAMOND<span class="accent">X</span> <small>BD</small></span></a><p>© <span id="year"></span> DiamondX BD. All rights reserved.</p><span class="footer-tag">GAME ON. GLOW ON.</span></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
