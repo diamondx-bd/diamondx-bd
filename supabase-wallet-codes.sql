@@ -76,7 +76,7 @@ create policy "User reads own topups" on public.wallet_topups for select to auth
   using (user_id=auth.uid() or exists(select 1 from public.profiles p where p.id=auth.uid() and p.role='admin'));
 drop policy if exists "User creates own pending topup" on public.wallet_topups;
 create policy "User creates own pending topup" on public.wallet_topups for insert to authenticated
-  with (user_id=auth.uid() and status='pending');
+  with (user_id=auth.uid() and status='pending' and reviewed_at is null and reviewed_by is null);
 drop policy if exists "Admin reads wallet ledger" on public.wallet_transactions;
 create policy "User reads own wallet ledger" on public.wallet_transactions for select to authenticated
   using (user_id=auth.uid() or exists(select 1 from public.profiles p where p.id=auth.uid() and p.role='admin'));
