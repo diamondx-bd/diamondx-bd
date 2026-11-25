@@ -40,17 +40,22 @@
       <div class="package-grid" id="packageGrid"></div>
   </section>
 
-  <section class="order-section" id="order">
-    <div class="order-intro"><span class="eyebrow">PLACE AN ORDER</span><h2>অর্ডারের তথ্য দিন</h2><p>অর্ডার পাঠাতে প্রথমে আপনার অ্যাকাউন্টে লগইন করুন।</p><div class="notice"><b>পেমেন্ট নিরাপত্তা:</b> ওয়েবসাইটে পেমেন্ট নির্দেশনা প্রকাশ না করা পর্যন্ত টাকা পাঠাবেন না।</div></div>
-    <form id="orderForm" class="order-form">
-      <label>Free Fire Player ID<input id="playerId" name="playerId" inputmode="numeric" placeholder="আপনার Player ID লিখুন" required></label>
-      <label>প্যাকেজ নির্বাচন করুন<select id="packageSelect" name="package" required><option value="">প্রথমে প্যাকেজ বেছে নিন</option></select></label>
-      <label>পেমেন্ট মাধ্যম<select id="paymentMethod" name="payment" required><option value="">নির্বাচন করুন</option><option>bKash</option><option>Nagad</option><option>Rocket</option><option>Wallet</option></select></label>
-      <label>Transaction ID (পেমেন্ট করার পরে)<input id="transactionId" name="transactionId" placeholder="Transaction ID (ঐচ্ছিক)"></label>
-      <button class="primary-btn submit-btn" type="submit">অর্ডার পাঠান <span>→</span></button>
-      <p class="form-foot">অর্ডার পাঠালে সেটি Pending হিসেবে Admin-এর কাছে যাবে।</p>
-    </form>
-  </section>
+  <div class="modal-backdrop" id="orderModal" hidden>
+    <section class="account-modal order-modal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+      <button class="modal-close" type="button" data-close-modal="orderModal" aria-label="বন্ধ করুন">×</button>
+      <span class="eyebrow">COMPLETE YOUR TOP-UP</span><h2 id="orderTitle">অর্ডার নিশ্চিত করুন</h2>
+      <p class="modal-description">প্যাকেজ নির্বাচন করার পর Player ID ও পেমেন্টের তথ্য দিন।</p>
+      <div class="notice order-safety"><b>পেমেন্ট নিরাপত্তা:</b> Admin-এর অনুমোদিত পেমেন্ট নির্দেশনা ছাড়া টাকা পাঠাবেন না।</div>
+      <form id="orderForm" class="order-form">
+        <label>Free Fire Player ID<input id="playerId" name="playerId" inputmode="numeric" placeholder="আপনার Player ID লিখুন" required></label>
+        <label>প্যাকেজ নির্বাচন করুন<select id="packageSelect" name="package" required><option value="">প্রথমে প্যাকেজ বেছে নিন</option></select></label>
+        <label>পেমেন্ট মাধ্যম<select id="paymentMethod" name="payment" required><option value="">নির্বাচন করুন</option><option>bKash</option><option>Nagad</option><option>Rocket</option><option>Wallet</option></select></label>
+        <label>Transaction ID<input id="transactionId" name="transactionId" placeholder="পেমেন্টের Transaction ID"></label>
+        <button class="primary-btn submit-btn" type="submit">অর্ডার নিশ্চিত করুন <span>→</span></button>
+        <p class="form-foot">অর্ডারটি Admin যাচাই করবেন।</p>
+      </form>
+    </section>
+  </div>
   <section class="result-card" id="orderResult" hidden aria-live="polite"></section>
   <section class="section codes-section" id="myCodes"><div class="section-heading"><div><span class="eyebrow">DIGITAL REWARDS</span><h2>আমার কোড</h2></div></div><div id="userCodes" class="code-list"><div class="notice">অর্ডার সম্পন্ন হলে Admin আপনার কোড এখানে যোগ করবেন।</div></div></section>
 
