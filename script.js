@@ -6,14 +6,14 @@
   const grid = $("packageGrid");
   const select = $("packageSelect");
   const result = $("orderResult");
-  let db = null, currentUser = null, isAdmin = false, products = [];
+  let db = null, currentUser = null, isAdmin = false, products = [], selectedCategory = "all";
 
   const defaultProducts = [
     ["25 Diamonds","diamond",25],["50 Diamonds","diamond",50],["115 Diamonds","diamond",115],
     ["240 Diamonds","diamond",240],["355 Diamonds","diamond",355],["480 Diamonds","diamond",480],
     ["610 Diamonds","diamond",610],["1240 Diamonds","diamond",1240],
-    ["Weekly Membership","membership",null],["Monthly Membership","membership",null],
-    ["Level Up Pass","pass",null]
+    ["PUBG 60 UC","pubg",60],["PUBG 325 UC","pubg",325],["PUBG 660 UC","pubg",660],
+    ["Weekly Membership","subscription",null],["Monthly Membership","subscription",null],["Level Up Pass","pass",null]
   ];
 
   function escapeHtml(value) {
@@ -35,7 +35,7 @@
 
   function renderProducts() {
     grid.innerHTML=""; select.innerHTML='<option value="">প্যাকেজ নির্বাচন করুন</option>';
-    const visible=products.filter(p=>p.is_active);
+    const visible=products.filter(p=>p.is_active && (selectedCategory==="all" || p.category===selectedCategory || (selectedCategory==="subscription" && ["membership","pass"].includes(p.category))));
     if(!visible.length) {
       grid.innerHTML='<div class="notice">এখনো কোনো সক্রিয় প্যাকেজ নেই। Admin লগইন করে দাম সেট ও প্যাকেজ চালু করুন।</div>';
       $("productStatus").textContent="প্যাকেজ পাওয়া যায়নি";
@@ -44,7 +44,7 @@
     $("productStatus").textContent=visible.length+"টি প্যাকেজ";
     visible.forEach(p=>{
       const card=document.createElement("article"); card.className="package";
-      const subtitle=p.category==="membership"?"Membership":p.category==="pass"?"Level Up Pass":(p.diamonds?Number(p.diamonds)+" Diamonds":"Diamond Pack");
+      const subtitle=p.category==="pubg"?(p.diamonds?Number(p.diamonds)+" UC":"PUBG UC"):(["subscription","membership"].includes(p.category)?"Subscription":p.category==="pass"?"Level Up Pass":(p.diamonds?Number(p.diamonds)+" Diamonds":"Diamond Pack"));
       card.innerHTML='<div class="gem">◆</div><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(subtitle)+'</p><div class="price">'+escapeHtml(bdt(p.price))+'</div><button type="button" data-product="'+escapeHtml(p.id)+'">এই প্যাকেজ নিন</button>';
       grid.appendChild(card);
       const option=document.createElement("option"); option.value=p.id; option.textContent=p.name+" — "+bdt(p.price); select.appendChild(option);
@@ -74,7 +74,7 @@
   async function refreshAuth(user) {
     currentUser=user||null; isAdmin=false;
     $("logoutBtn").hidden=!currentUser;
-    $("authState").textContent=currentUser?"লগইন: "+(currentUser.email||"Account"):"লগইন করা হয়নি";
+    $("openLoginBtn").hidden=Boolean(currentUser); $("openProfileBtn").hidden=!currentUser;
     if(currentUser) {
       const {data,error}=await db.from("profiles").select("role,full_name").eq("id",currentUser.id).maybeSingle();
       if(!error && data && data.role==="admin") isAdmin=true;
@@ -210,7 +210,7 @@
       box.appendChild(item);
     });
   }
-\n  $("year").textContent=new Date().getFullYear();
+\n  document.querySelectorAll(".category-tab").forEach(tab=>tab.addEventListener("click",()=>{selectedCategory=tab.dataset.filter;document.querySelectorAll(".category-tab").forEach(t=>t.classList.toggle("active",t===tab));renderProducts();}));\n  ["navOrders","navWallet","navAccount"].forEach(id=>$(id).addEventListener("click",event=>{event.preventDefault();if(currentUser){openModal("profileModal");loadOrderHistory();}else openModal("loginModal");}));\n  $("year").textContent=new Date().getFullYear();
   if(!clientReady) {
     $("productStatus").textContent="Supabase key সেট করা বাকি";
     grid.innerHTML='<div class="notice">Supabase সংযোগ চালু করতে GitHub-এর config.js ফাইলে Publishable/anon key বসাতে হবে।</div>';
