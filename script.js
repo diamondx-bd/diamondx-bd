@@ -44,7 +44,7 @@
     $("productStatus").textContent=visible.length+"টি প্যাকেজ";
     visible.forEach(p=>{
       const card=document.createElement("article"); card.className="package";
-      const subtitle=p.category==="pubg"?(p.diamonds?Number(p.diamonds)+" UC":"PUBG UC"):(["subscription","membership"].includes(p.category)?"Subscription":p.category==="pass"?"Level Up Pass":(p.diamonds?Number(p.diamonds)+" Diamonds":"Diamond Pack"));
+      const subtitle=p.category==="pubg"?(p.diamonds?Number(p.diamonds)+" UC":"PUBG UC"):(["subscription","membership","weekly","monthly"].includes(p.category)?"Subscription":(["pass","level_up"].includes(p.category)?"Level Up Pass":(p.diamonds?Number(p.diamonds)+" Diamonds":"Diamond Pack")));
       card.innerHTML='<div class="gem">◆</div><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(subtitle)+'</p><div class="price">'+escapeHtml(bdt(p.price))+'</div><button type="button" data-product="'+escapeHtml(p.id)+'">এই প্যাকেজ নিন</button>';
       grid.appendChild(card);
       const option=document.createElement("option"); option.value=p.id; option.textContent=p.name+" — "+bdt(p.price); select.appendChild(option);
