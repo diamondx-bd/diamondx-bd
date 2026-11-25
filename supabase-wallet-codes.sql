@@ -56,6 +56,8 @@ create table if not exists public.wallet_topups (
   reviewed_by uuid references auth.users(id)
 );
 create index if not exists wallet_topups_user_created_idx on public.wallet_topups(user_id,created_at desc);
+create unique index if not exists wallet_topups_unique_transaction_idx
+  on public.wallet_topups(payment_method,lower(trim(transaction_id)));
 
 create table if not exists public.wallet_transactions (
   id uuid primary key default gen_random_uuid(),
