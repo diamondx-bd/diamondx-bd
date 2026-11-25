@@ -37,8 +37,8 @@ The seed includes draft Free Fire prices (25/40/85/160/240/320/400/800 BDT for 2
 4. Wait for GitHub Pages to publish the site.
 
 ## Wallet, payment approval and digital codes (new)
-1. In Supabase **SQL Editor**, run the complete file `supabase-wallet-codes.sql` once. It adds the wallet balance, top-up requests/ledger, digital-code table, and secure approval/order/code RPCs with RLS.
-2. Sign up on the website with the email you want to use for Admin.
+1. **Already applied to the connected DiamondX-BD Supabase project** as migration `diamondx_wallet_codes_secure`. For a fresh project only, run `supabase-wallet-codes.sql` once in Supabase SQL Editor.
+2. The connected project currently has one Admin profile. For a fresh project, sign up on the website with the email you want to use for Admin.
 3. In Supabase SQL Editor, promote that account (replace the email):
    ```sql
    update public.profiles
@@ -46,6 +46,6 @@ The seed includes draft Free Fire prices (25/40/85/160/240/320/400/800 BDT for 2
    where id=(select id from auth.users where email='YOUR_ADMIN_EMAIL');
    ```
 4. Admin can set package prices and activate packages, approve/reject top-up requests, approve/reject orders, mark approved orders completed, and assign a digital code using the Order ID.
-5. A top-up is credited only by the Admin approval RPC. Wallet orders are debited server-side and refunded if Admin rejects the pending order. Codes are visible only to the assigned customer and Admin.
+5. Fourteen starter packages (8 Free Fire, 3 PUBG UC, 2 memberships, 1 Level Up Pass) have been inserted into the connected database; all are disabled until Admin reviews and activates them. A top-up is credited only by the Admin approval RPC. Wallet orders are debited server-side and refunded if Admin rejects the pending order. Codes are visible only to the assigned customer and Admin.
 
 **Important:** No payment recipient/account number is configured in this repository. Do not send money until you add and verify your official payment instructions. Keep the Supabase service-role/secret key out of `config.js`; only the browser publishable/anon key belongs there.
