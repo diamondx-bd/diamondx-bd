@@ -107,3 +107,27 @@ footer{border-top:1px solid var(--line);padding:25px 0;display:flex;align-items:
  .admin-grid{grid-template-columns:1fr}
  .account-box,.admin-box{padding:17px}
 }
+
+/* Header login and account modals */
+.header-button{font:inherit;cursor:pointer;background:#e8b84f14}
+.modal-backdrop{position:fixed;inset:0;z-index:1000;background:#000b;backdrop-filter:blur(8px);display:flex;align-items:flex-start;justify-content:center;padding:clamp(14px,5vh,48px) 14px 24px;overflow-y:auto}
+.account-modal{position:relative;width:min(100%,480px);border:1px solid #e8b84f66;border-radius:22px;padding:30px;background:linear-gradient(145deg,#211b10,#0e0d0a);box-shadow:0 25px 90px #000b;animation:modalIn .18s ease-out}
+.account-modal h2{font-size:30px;margin:8px 0}
+.modal-description{color:var(--muted);font-size:14px;line-height:1.7;margin:8px 0 20px}
+.modal-close{position:absolute;right:14px;top:12px;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#e8b84f12;color:var(--gold-light);font-size:25px;cursor:pointer}
+.account-modal .auth-buttons .primary-btn{flex:1}
+.wallet-card{display:grid;gap:7px;padding:18px;border-radius:15px;border:1px solid #e8b84f55;background:linear-gradient(120deg,#e8b84f1a,#e8b84f08);margin:20px 0}
+.wallet-card span,.wallet-card small{color:var(--muted);font-size:13px}
+.wallet-card strong{font-size:32px;color:var(--gold-light)}
+.wallet-add{padding:16px;border:1px solid var(--line);border-radius:14px;margin-bottom:22px}
+.wallet-add h3,.history-heading h3{margin:0 0 8px;font-size:18px}
+.history-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.history-heading span{font-size:12px;color:var(--gold-light)}
+.order-history{display:grid;gap:10px}
+.history-item{border:1px solid var(--line);border-radius:12px;padding:13px;background:#0b0a08;font-size:13px;line-height:1.7}
+.history-item strong{color:var(--gold-light)}
+.history-item small{color:var(--muted)}
+.history-empty{padding:18px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:13px}
+.logout-profile{width:100%;margin-top:20px}
+@keyframes modalIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){.modal-backdrop{padding:14px 10px 20px}.account-modal{padding:25px 18px;border-radius:18px}.header-actions .header-button{padding:8px 11px}}
