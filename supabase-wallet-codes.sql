@@ -143,6 +143,8 @@ begin
   if p_status not in ('approved','rejected','completed') then raise exception 'Invalid status'; end if;
   select * into o from public.orders where id=p_order_id for update;
   if not found then raise exception 'Order not found'; end if;
+  if o.status='pending' and p_status='completed' then raise exception 'Approve order before completing'; end if;
+  if o.status='approved' and p_status<>'completed' then raise exception 'Approved order can only be marked completed'; end if;
   if o.status not in ('pending','approved') then raise exception 'Order cannot be changed from current status'; end if;
   if p_status='rejected' and o.payment_method='Wallet' and o.status='pending' then
     update public.profiles set wallet_balance=wallet_balance+o.price where id=o.user_id returning wallet_balance into new_balance;
