@@ -80,7 +80,8 @@
       if(!error && data && data.role==="admin") isAdmin=true;
     }
     $("adminPanel").hidden=!isAdmin;
-    if(isAdmin) { await loadAdminOrders(); fillEditOptions(); }\n    if(currentUser) await loadOrderHistory();
+    if(isAdmin) { await loadAdminOrders(); fillEditOptions(); }
+    if(currentUser) await loadOrderHistory();
   }
 
   async function loadAdminOrders() {
@@ -210,7 +211,10 @@
       box.appendChild(item);
     });
   }
-\n  document.querySelectorAll(".category-tab").forEach(tab=>tab.addEventListener("click",()=>{selectedCategory=tab.dataset.filter;document.querySelectorAll(".category-tab").forEach(t=>t.classList.toggle("active",t===tab));renderProducts();}));\n  ["navOrders","navWallet","navAccount"].forEach(id=>$(id).addEventListener("click",event=>{event.preventDefault();if(currentUser){openModal("profileModal");loadOrderHistory();}else openModal("loginModal");}));\n  $("year").textContent=new Date().getFullYear();
+
+  document.querySelectorAll(".category-tab").forEach(tab=>tab.addEventListener("click",()=>{selectedCategory=tab.dataset.filter;document.querySelectorAll(".category-tab").forEach(t=>t.classList.toggle("active",t===tab));renderProducts();}));
+  ["navOrders","navWallet","navAccount"].forEach(id=>$(id).addEventListener("click",event=>{event.preventDefault();if(currentUser){openModal("profileModal");loadOrderHistory();}else openModal("loginModal");}));
+  $("year").textContent=new Date().getFullYear();
   if(!clientReady) {
     $("productStatus").textContent="Supabase key সেট করা বাকি";
     grid.innerHTML='<div class="notice">Supabase সংযোগ চালু করতে GitHub-এর config.js ফাইলে Publishable/anon key বসাতে হবে।</div>';
