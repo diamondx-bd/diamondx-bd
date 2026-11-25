@@ -99,7 +99,7 @@ create policy "User reads own digital codes" on public.digital_codes for select 
 
 -- Only an Admin can approve/reject a pending top-up; approval and balance credit are atomic.
 create or replace function public.review_wallet_topup(p_topup_id uuid,p_status text)
-returns void language plpgsql security definer set search_path=public,auth
+returns void language plpgsql security definer set search_path=''
 as $$
 declare t public.wallet_topups%rowtype; new_balance numeric(12,2);
 begin
@@ -118,12 +118,12 @@ begin
       values(t.user_id,t.id,t.amount,'topup',new_balance);
   end if;
 end $$;
-revoke all on function public.review_wallet_topup(uuid,text) from public;
+revoke all on function public.review_wallet_topup(uuid,text) from public, anon;
 grant execute on function public.review_wallet_topup(uuid,text) to authenticated;
 
 -- Wallet purchases debit immediately; rejected wallet orders are refunded by admin_update_order_status.
 create or replace function public.create_wallet_order(p_product_id uuid,p_player_id text)
-returns uuid language plpgsql security definer set search_path=public,auth
+returns uuid language plpgsql security definer set search_path=''
 as $$
 declare p public.products%rowtype; uid uuid; current_balance numeric(12,2); oid uuid; new_balance numeric(12,2);
 begin
@@ -142,11 +142,11 @@ begin
     values(uid,oid,-p.price,'purchase',new_balance);
   return oid;
 end $$;
-revoke all on function public.create_wallet_order(uuid,text) from public;
+revoke all on function public.create_wallet_order(uuid,text) from public, anon;
 grant execute on function public.create_wallet_order(uuid,text) to authenticated;
 
 create or replace function public.admin_update_order_status(p_order_id uuid,p_status text)
-returns void language plpgsql security definer set search_path=public,auth
+returns void language plpgsql security definer set search_path=''
 as $$
 declare o public.orders%rowtype; new_balance numeric(12,2);
 begin
@@ -166,12 +166,12 @@ begin
   end if;
   update public.orders set status=p_status where id=p_order_id;
 end $$;
-revoke all on function public.admin_update_order_status(uuid,text) from public;
+revoke all on function public.admin_update_order_status(uuid,text) from public, anon;
 grant execute on function public.admin_update_order_status(uuid,text) to authenticated;
 
 -- Codes are assigned to a real order and can only be created by an Admin.
 create or replace function public.admin_assign_code(p_order_id uuid,p_code_text text)
-returns uuid language plpgsql security definer set search_path=public,auth
+returns uuid language plpgsql security definer set search_path=''
 as $$
 declare o public.orders%rowtype; cid uuid;
 begin
@@ -185,5 +185,5 @@ begin
     values(o.user_id,o.id,trim(p_code_text)) returning id into cid;
   return cid;
 end $$;
-revoke all on function public.admin_assign_code(uuid,text) from public;
+revoke all on function public.admin_assign_code(uuid,text) from public, anon;
 grant execute on function public.admin_assign_code(uuid,text) to authenticated;
