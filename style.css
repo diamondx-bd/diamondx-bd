@@ -131,3 +131,15 @@ footer{border-top:1px solid var(--line);padding:25px 0;display:flex;align-items:
 .logout-profile{width:100%;margin-top:20px}
 @keyframes modalIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:760px){.modal-backdrop{padding:14px 10px 20px}.account-modal{padding:25px 18px;border-radius:18px}.header-actions .header-button{padding:8px 11px}}
+
+
+/* Game categories and app-like bottom navigation */
+.category-tabs{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 22px}
+.category-tab{border:1px solid var(--line);border-radius:30px;padding:10px 17px;background:#15120d;color:var(--muted);font-weight:700;cursor:pointer}
+.category-tab.active,.category-tab:hover{background:linear-gradient(110deg,var(--gold-light),var(--gold-dark));border-color:var(--gold);color:#171006}
+.codes-section{padding-top:10px}
+.bottom-nav{position:sticky;bottom:10px;z-index:50;width:min(700px,calc(100% - 24px));margin:25px auto 18px;padding:9px;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;border:1px solid #e8b84f55;border-radius:18px;background:#100f0deF;backdrop-filter:blur(16px);box-shadow:0 10px 40px #0009}
+.bottom-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:52px;border:0;border-radius:12px;background:transparent;color:var(--muted);text-decoration:none;font:700 11px Arial,'Noto Sans Bengali',sans-serif;cursor:pointer}
+.bottom-nav-item span{font-size:20px;color:var(--gold)}
+.bottom-nav-item.active,.bottom-nav-item:hover{background:#e8b84f18;color:var(--gold-light)}
+@media(max-width:420px){.category-tabs{gap:6px}.category-tab{padding:9px 12px;font-size:12px}.bottom-nav{width:calc(100% - 14px);margin-bottom:8px;padding:6px}.bottom-nav-item{font-size:10px;min-height:48px}}
