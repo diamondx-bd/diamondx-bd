@@ -117,6 +117,29 @@
     $("order").scrollIntoView({behavior:"smooth"});
   });
 
+  $("forgotPasswordBtn").addEventListener("click",async()=>{
+    if(!clientReady){$("authMessage").textContent="Supabase সংযোগ চালু করতে config.js সেট করুন।";return;}
+    const email=$("authEmail").value.trim();
+    if(!email){$("authMessage").textContent="আগে আপনার অ্যাকাউন্টের ইমেইল লিখুন।";$("authEmail").focus();return;}
+    $("authMessage").textContent="পাসওয়ার্ড রিসেট ইমেইল পাঠানো হচ্ছে…";
+    const redirectTo=window.location.origin+window.location.pathname;
+    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo});
+    $("authMessage").textContent=error?"রিসেট ইমেইল পাঠানো যায়নি: "+error.message:"যদি এই ইমেইলে অ্যাকাউন্ট থাকে, তাহলে পাসওয়ার্ড রিসেটের লিংক পাঠানো হয়েছে। Inbox ও Spam ফোল্ডার দেখুন।";
+  });
+
+  $("resetPasswordForm").addEventListener("submit",async event=>{
+    event.preventDefault();
+    const password=$("newPassword").value,confirm=$("confirmNewPassword").value;
+    if(password.length<6){$("resetPasswordMessage").textContent="কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড দিন।";return;}
+    if(password!==confirm){$("resetPasswordMessage").textContent="দুটি পাসওয়ার্ড মিলছে না।";return;}
+    $("resetPasswordMessage").textContent="পাসওয়ার্ড পরিবর্তন হচ্ছে…";
+    const {error}=await db.auth.updateUser({password});
+    if(error){$("resetPasswordMessage").textContent="পাসওয়ার্ড পরিবর্তন হয়নি: "+error.message;return;}
+    $("resetPasswordMessage").textContent="পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে। এখন নতুন পাসওয়ার্ড দিয়ে লগইন করতে পারবেন।";
+    $("resetPasswordForm").hidden=true;$("authForm").hidden=false;
+    $("authPassword").value="";$("newPassword").value="";$("confirmNewPassword").value="";
+  });
+
   $("authForm").addEventListener("submit",async event=>{
     event.preventDefault();
     if(!clientReady){$("authMessage").textContent="প্রথমে config.js-এ Supabase Publishable/anon key বসাতে হবে।";return;}
@@ -237,5 +260,13 @@
   db=window.supabase.createClient(config.url,config.anonKey);
   loadProducts();
   db.auth.getSession().then(({data})=>refreshAuth(data.session?.user||null));
-  db.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>refreshAuth(session?.user||null),0);});
+  db.auth.onAuthStateChange((event,session)=>{
+    if(event==="PASSWORD_RECOVERY"){
+      $("authForm").hidden=true;$("resetPasswordForm").hidden=false;
+      $("resetPasswordTitle").textContent="নতুন পাসওয়ার্ড সেট করুন";
+      $("resetPasswordMessage").textContent="নতুন পাসওয়ার্ড লিখে নিশ্চিত করুন।";
+      openModal("loginModal");
+    }
+    setTimeout(()=>refreshAuth(session?.user||null),0);
+  });
 })();
