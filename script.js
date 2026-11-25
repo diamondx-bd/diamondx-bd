@@ -30,7 +30,7 @@
   }
   function setAdminMessage(text) { $("adminMessage").textContent=text; }
   function statusText(status) {
-    return ({pending:"Pending",approved:"Approved",rejected:"Rejected"})[status] || status;
+    return ({pending:"Pending",approved:"Approved",rejected:"Rejected",completed:"Completed"})[status] || status;
   }
 
   function renderProducts() {
@@ -76,12 +76,12 @@
     $("logoutBtn").hidden=!currentUser;
     $("openLoginBtn").hidden=Boolean(currentUser); $("openProfileBtn").hidden=!currentUser;
     if(currentUser) {
-      const {data,error}=await db.from("profiles").select("role,full_name").eq("id",currentUser.id).maybeSingle();
+      const {data,error}=await db.from("profiles").select("role,full_name,wallet_balance").eq("id",currentUser.id).maybeSingle();
       if(!error && data && data.role==="admin") isAdmin=true;
     }
     $("adminPanel").hidden=!isAdmin;
-    if(isAdmin) { await loadAdminOrders(); fillEditOptions(); }
-    if(currentUser) await loadOrderHistory();
+    if(isAdmin) { await loadAdminOrders(); await loadAdminTopups(); await loadAdminCodes(); fillEditOptions(); }
+    if(currentUser) { await loadOrderHistory(); await loadWallet(); await loadUserCodes(); }
   }
 
   async function loadAdminOrders() {
@@ -96,7 +96,7 @@
       item.innerHTML='<strong>'+escapeHtml(order.product_name||"Package")+'</strong> <span class="status-pill">'+escapeHtml(statusText(order.status))+'</span><br>Player ID: '+escapeHtml(order.player_id)+'<br>Payment: '+escapeHtml(order.payment_method)+'<br>Transaction: '+escapeHtml(order.transaction_id||"—")+'<br>Price: '+escapeHtml(bdt(order.price))+'<br><small>'+escapeHtml(new Date(order.created_at).toLocaleString())+'</small><br><select data-order="'+escapeHtml(order.id)+'"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>';
       const status=item.querySelector("select"); status.value=order.status;
       status.addEventListener("change",async()=>{
-        const {error:updateError}=await db.from("orders").update({status:status.value}).eq("id",order.id);
+        const {error:updateError}=await db.rpc("admin_update_order_status",{p_order_id:order.id,p_status:status.value});
         if(updateError) { showMessage("অর্ডারের অবস্থা পরিবর্তন হয়নি: "+updateError.message); status.value=order.status; }
         else { order.status=status.value; showMessage("অর্ডারের অবস্থা আপডেট হয়েছে।",true); }
       });
@@ -147,12 +147,14 @@
     if(!product||!product.is_active){alert("সক্রিয় প্যাকেজ নির্বাচন করুন।");return;}
     if(product.price===null||product.price===undefined){alert("এই প্যাকেজের দাম Admin এখনো নির্ধারণ করেননি।");return;}
     const payload={user_id:currentUser.id,product_id:product.id,product_name:product.name,player_id:playerId,payment_method:payment,transaction_id:transactionId||null,price:product.price,status:"pending"};
-    const {data,error}=await db.from("orders").insert(payload).select("id").single();
+    let data,error;
+    if(payment==="Wallet") { const response=await db.rpc("create_wallet_order",{p_product_id:product.id,p_player_id:playerId}); error=response.error; data={id:response.data}; }
+    else { const response=await db.from("orders").insert(payload).select("id").single(); data=response.data; error=response.error; }
     if(error){showMessage("অর্ডার জমা হয়নি: "+error.message);return;}
     result.hidden=false;
     result.innerHTML='<h3>অর্ডার জমা হয়েছে!</h3>Order ID: <b>'+escapeHtml(data.id)+'</b><br>প্যাকেজ: '+escapeHtml(product.name)+'<br>মূল্য: '+escapeHtml(bdt(product.price))+'<br>Status: Pending<p>Admin অর্ডার যাচাই করে আপডেট করবেন।</p>';
     result.scrollIntoView({behavior:"smooth"});
-    $("orderForm").reset();
+    $("orderForm").reset(); await loadWallet(); await loadOrderHistory();
   });
 
   $("editProduct").addEventListener("change",()=>{
@@ -196,7 +198,12 @@
   document.querySelectorAll("[data-close-modal]").forEach(btn=>btn.addEventListener("click",()=>closeModal(btn.dataset.closeModal)));
   document.querySelectorAll(".modal-backdrop").forEach(backdrop=>backdrop.addEventListener("click",event=>{if(event.target===backdrop)closeModal(backdrop.id);}));
   document.addEventListener("keydown",event=>{if(event.key==="Escape")document.querySelectorAll(".modal-backdrop:not([hidden])").forEach(m=>closeModal(m.id));});
-  $("addBalanceBtn").addEventListener("click",()=>{$("walletMessage").textContent="ওয়ালেট টপ-আপের জন্য নিরাপদ পেমেন্ট ও Admin approval ব্যবস্থা পরের ধাপে যুক্ত করা হবে।";});
+  $("walletForm").addEventListener("submit",async event=>{event.preventDefault();if(!currentUser){$("walletMessage").textContent="প্রথমে লগইন করুন।";return;}const amount=Number($("walletAmount").value),method=$("walletMethod").value,transactionId=$("walletTransaction").value.trim();if(!Number.isFinite(amount)||amount<50||amount>50000){$("walletMessage").textContent="৫০ থেকে ৫০,০০০ টাকার মধ্যে পরিমাণ দিন।";return;}if(!transactionId){$("walletMessage").textContent="Transaction ID লিখুন।";return;}const {error}=await db.from("wallet_topups").insert({user_id:currentUser.id,amount,payment_method:method,transaction_id:transactionId,status:"pending"});$("walletMessage").textContent=error?"অনুরোধ পাঠানো হয়নি: "+error.message:"টপ-আপ অনুরোধ Admin-এর কাছে Pending হিসেবে জমা হয়েছে।";if(!error){$("walletForm").reset();await loadWallet();}});
+  async function loadWallet(){if(!currentUser)return;const {data,error}=await db.from("profiles").select("wallet_balance").eq("id",currentUser.id).maybeSingle();if(!error&&data){$("walletBalance").textContent=bdt(data.wallet_balance||0);}}
+  async function loadUserCodes(){if(!currentUser)return;const box=$("userCodes");if(!box)return;box.textContent="কোড লোড হচ্ছে…";const {data,error}=await db.from("digital_codes").select("id,order_id,code_text,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false});if(error){box.textContent="কোড পাওয়া যায়নি: "+error.message;return;}if(!data||!data.length){box.innerHTML='<div class="notice">এখনো কোনো ডিজিটাল কোড নেই।</div>';return;}box.innerHTML="";data.forEach(c=>{const item=document.createElement("div");item.className="code-item";item.innerHTML='<strong>আপনার কোড</strong><code>'+escapeHtml(c.code_text)+'</code><small>Order: '+escapeHtml(c.order_id)+'</small>';box.appendChild(item);});}
+  async function loadAdminTopups(){if(!isAdmin)return;const box=$("adminTopups");const {data,error}=await db.from("wallet_topups").select("id,user_id,amount,payment_method,transaction_id,status,created_at").order("created_at",{ascending:false}).limit(40);if(error){box.textContent="Top-up load failed: "+error.message;return;}if(!data||!data.length){box.textContent="কোনো টপ-আপ অনুরোধ নেই।";return;}box.innerHTML="";data.forEach(t=>{const item=document.createElement("div");item.className="admin-order";item.innerHTML='<strong>'+escapeHtml(bdt(t.amount))+'</strong> <span class="status-pill">'+escapeHtml(statusText(t.status))+'</span><br>User: <code>'+escapeHtml(t.user_id)+'</code><br>Method: '+escapeHtml(t.payment_method)+'<br>Transaction: <code>'+escapeHtml(t.transaction_id)+'</code><br><small>'+escapeHtml(new Date(t.created_at).toLocaleString())+'</small><br><select><option value="pending">Pending</option><option value="approved">Approve</option><option value="rejected">Reject</option></select>';const sel=item.querySelector("select");sel.value=t.status;sel.disabled=t.status!=="pending";sel.addEventListener("change",async()=>{const {error}=await db.rpc("review_wallet_topup",{p_topup_id:t.id,p_status:sel.value});if(error){showMessage("Top-up update failed: "+error.message);sel.value=t.status;}else{showMessage("Top-up status updated.",true);await loadAdminTopups();await loadWallet();}});box.appendChild(item);});}
+  async function loadAdminCodes(){if(!isAdmin)return;const box=$("adminCodes");const {data,error}=await db.from("digital_codes").select("id,user_id,order_id,code_text,created_at").order("created_at",{ascending:false}).limit(50);if(error){box.textContent="Codes load failed: "+error.message;return;}if(!data||!data.length){box.textContent="এখনো কোনো কোড অ্যাসাইন হয়নি।";return;}box.innerHTML="";data.forEach(c=>{const item=document.createElement("div");item.className="admin-order";item.innerHTML='<code>'+escapeHtml(c.code_text)+'</code><br>User: '+escapeHtml(c.user_id)+'<br>Order: '+escapeHtml(c.order_id);box.appendChild(item);});}
+  $("codeForm").addEventListener("submit",async event=>{event.preventDefault();if(!isAdmin){$("codeMessage").textContent="Admin access required";return;}const orderId=$("codeOrderId").value.trim(),code=$("codeValue").value.trim();const {data,error}=await db.rpc("admin_assign_code",{p_order_id:orderId,p_code_text:code});$("codeMessage").textContent=error?"কোড অ্যাসাইন হয়নি: "+error.message:"কোড সফলভাবে অর্ডারে যুক্ত হয়েছে।";if(!error){$("codeForm").reset();await loadAdminCodes();}});
   async function loadOrderHistory(){
     if(!currentUser)return;
     const box=$("orderHistory");box.textContent="অর্ডার লোড হচ্ছে…";
