@@ -143,3 +143,14 @@ footer{border-top:1px solid var(--line);padding:25px 0;display:flex;align-items:
 .bottom-nav-item span{font-size:20px;color:var(--gold)}
 .bottom-nav-item.active,.bottom-nav-item:hover{background:#e8b84f18;color:var(--gold-light)}
 @media(max-width:420px){.category-tabs{gap:6px}.category-tab{padding:9px 12px;font-size:12px}.bottom-nav{width:calc(100% - 14px);margin-bottom:8px;padding:6px}.bottom-nav-item{font-size:10px;min-height:48px}}
+
+/* Wallet and digital-code UI */
+.admin-subheading{margin:24px 0 12px!important;padding-top:16px;border-top:1px solid var(--line);font-size:17px!important;color:var(--gold-light)}
+.code-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.code-item{display:grid;gap:8px;border:1px solid #e8b84f55;border-radius:14px;padding:16px;background:#12100c}
+.code-item strong{color:var(--gold-light)}
+.code-item code{display:block;overflow-wrap:anywhere;padding:10px;border-radius:8px;background:#050504;color:#fff;font-size:15px}
+.code-item small{color:var(--muted);font-size:11px}
+#adminTopups,#adminCodes{max-height:440px;overflow:auto;padding-right:3px}
+#codeForm{margin-top:12px}
+.wallet-add .form-foot{margin-top:7px;line-height:1.6}
