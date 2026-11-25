@@ -32,6 +32,17 @@ begin
 end $$;
 alter table public.orders add constraint orders_status_allowed
   check (status in ('pending','approved','rejected','completed'));
+-- Wallet is a valid order payment method; remove any old restrictive payment-method check.
+do $
+declare c record;
+begin
+  for c in select conname from pg_constraint
+    where conrelid='public.orders'::regclass and contype='c'
+      and pg_get_constraintdef(oid) ilike '%payment_method%'
+  loop
+    execute format('alter table public.orders drop constraint %I',c.conname);
+  end loop;
+end $;
 
 create table if not exists public.wallet_topups (
   id uuid primary key default gen_random_uuid(),
