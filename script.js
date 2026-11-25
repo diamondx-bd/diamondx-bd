@@ -146,6 +146,18 @@
     $("authPassword").value="";$("newPassword").value="";$("confirmNewPassword").value="";
   });
 
+  $("googleLoginBtn").addEventListener("click",async()=>{
+    if(!clientReady){$("authMessage").textContent="প্রথমে config.js-এ Supabase Publishable/anon key বসাতে হবে।";return;}
+    const button=$("googleLoginBtn");
+    button.disabled=true;button.textContent="Google-এ যাচ্ছেন…";
+    const redirectTo=window.location.origin+window.location.pathname;
+    const {error}=await db.auth.signInWithOAuth({provider:"google",options:{redirectTo}});
+    if(error){
+      button.disabled=false;button.textContent="🌐 Google দিয়ে লগইন";
+      $("authMessage").textContent="Google লগইন শুরু হয়নি: "+error.message;
+    }
+  });
+
   $("authForm").addEventListener("submit",async event=>{
     event.preventDefault();
     if(!clientReady){$("authMessage").textContent="প্রথমে config.js-এ Supabase Publishable/anon key বসাতে হবে।";return;}
