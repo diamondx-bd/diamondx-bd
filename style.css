@@ -82,3 +82,28 @@ footer{border-top:1px solid var(--line);padding:25px 0;display:flex;align-items:
  .package h3{font-size:17px}
  .hero h1{font-size:43px}
 }
+.header-actions{display:flex;gap:10px;align-items:center}
+.header-actions .help-link{font-size:13px}
+.account-section{padding-bottom:60px}
+.account-box,.admin-box{background:linear-gradient(145deg,#1b1811,#100f0c);border:1px solid var(--line);border-radius:18px;padding:24px}
+.account-box{max-width:600px}
+.auth-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.secondary-btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid #6b5228;border-radius:10px;background:#e8b84f0d;color:var(--gold-light);padding:12px 16px;font-weight:700;cursor:pointer}
+.secondary-btn:hover{background:#e8b84f22}
+.admin-section{border-top:1px solid var(--line);padding-top:48px}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.admin-box h3{margin:0 0 18px;font-size:20px}
+.check-label{display:flex!important;align-items:center;gap:10px!important}
+.check-label input{width:18px;height:18px;accent-color:var(--gold)}
+.admin-orders{display:grid;gap:12px}
+.admin-order{border:1px solid var(--line);border-radius:12px;padding:14px;background:#0d0c09;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.admin-order strong{color:var(--gold-light)}
+.admin-order select{margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#16130d;color:#fff}
+.status-pill{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:2px 9px;color:var(--gold-light);font-size:12px}
+[hidden]{display:none!important}
+@media(max-width:760px){
+ .header-actions{gap:6px}
+ .header-actions .help-link{padding:8px 10px;font-size:12px}
+ .admin-grid{grid-template-columns:1fr}
+ .account-box,.admin-box{padding:17px}
+}
