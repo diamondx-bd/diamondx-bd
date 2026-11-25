@@ -11,7 +11,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#" aria-label="DiamondX BD home"><span class="brand-mark">X</span><span>DIAMOND<span class="accent">X</span> <small>BD</small></span></a>
-    <div class="header-actions"><a class="help-link" href="#order">অর্ডার করুন <span>↗</span></a><a class="help-link" href="#account">লগইন</a></div>
+    <div class="header-actions"><a class="help-link" href="#packages">প্যাকেজ <span>↓</span></a><button class="help-link header-button" id="openLoginBtn" type="button">লগইন</button><button class="help-link header-button" id="openProfileBtn" type="button" hidden>প্রোফাইল</button></div>
   </header>
 
   <main>
@@ -52,18 +52,35 @@
   </section>
   <section class="result-card" id="orderResult" hidden aria-live="polite"></section>
 
-  <section class="section account-section" id="account">
-    <div class="section-heading"><div><span class="eyebrow">ACCOUNT</span><h2>লগইন / অ্যাকাউন্ট</h2></div><span id="authState" class="section-note">লগইন করা হয়নি</span></div>
-    <div class="account-box">
+  <div class="modal-backdrop" id="loginModal" hidden>
+    <section class="account-modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <button class="modal-close" type="button" data-close-modal="loginModal" aria-label="বন্ধ করুন">×</button>
+      <span class="eyebrow">YOUR DIAMONDX ACCOUNT</span><h2 id="loginTitle">লগইন করুন</h2>
+      <p class="modal-description">ইমেইল ও পাসওয়ার্ড দিয়ে সরাসরি আপনার অ্যাকাউন্টে প্রবেশ করুন।</p>
       <form id="authForm" class="order-form">
         <label>ইমেইল<input id="authEmail" type="email" autocomplete="email" placeholder="আপনার ইমেইল" required></label>
-        <label>পাসওয়ার্ড<input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="কমপক্ষে ৬ অক্ষর" required></label>
-        <div class="auth-buttons"><button class="primary-btn" type="submit">লগইন</button><button class="secondary-btn" type="button" id="signupBtn">নতুন অ্যাকাউন্ট</button><button class="secondary-btn" type="button" id="logoutBtn" hidden>লগআউট</button></div>
-        <p class="form-foot" id="authMessage">নিজের অ্যাকাউন্ট দিয়ে লগইন করুন। Admin হলে Admin Panel দেখা যাবে।</p>
+        <label>পাসওয়ার্ড<input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="পাসওয়ার্ড" required></label>
+        <div class="auth-buttons"><button class="primary-btn" type="submit">লগইন</button><button class="secondary-btn" type="button" id="signupBtn">নতুন অ্যাকাউন্ট</button></div>
+        <p class="form-foot" id="authMessage">ইমেইল দিয়ে লগইন করুন অথবা নতুন অ্যাকাউন্ট তৈরি করুন।</p>
       </form>
-    </div>
-  </section>
-
+    </section>
+  </div>
+  <div class="modal-backdrop" id="profileModal" hidden>
+    <section class="account-modal profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+      <button class="modal-close" type="button" data-close-modal="profileModal" aria-label="বন্ধ করুন">×</button>
+      <span class="eyebrow">MY ACCOUNT</span><h2 id="profileTitle">আমার প্রোফাইল</h2>
+      <p class="modal-description" id="profileEmail">আপনার অ্যাকাউন্ট</p>
+      <div class="wallet-card"><span>ওয়ালেট ব্যালেন্স</span><strong id="walletBalance">৳ 0</strong><small>টপ-আপ অনুমোদনের পর ব্যালেন্সে যোগ হবে</small></div>
+      <div class="wallet-add">
+        <h3>ব্যালেন্স যোগ করুন</h3>
+        <p class="modal-description">টাকা যোগ করার অনুরোধ ও পেমেন্ট যাচাইয়ের ব্যবস্থা পরবর্তী ধাপে চালু করা হবে।</p>
+        <button class="secondary-btn" type="button" id="addBalanceBtn">টাকা যোগ করার নিয়ম</button>
+        <p class="form-foot" id="walletMessage"></p>
+      </div>
+      <div class="history-area"><div class="history-heading"><h3>অর্ডার হিস্টোরি</h3><span id="completedCount">0টি সম্পন্ন</span></div><div id="orderHistory" class="order-history">অর্ডার লোড হচ্ছে…</div></div>
+      <button class="secondary-btn logout-profile" type="button" id="logoutBtn">লগআউট</button>
+    </section>
+  </div>
   <section class="section admin-section" id="adminPanel" hidden>
     <div class="section-heading"><div><span class="eyebrow">ADMIN CONTROL</span><h2>Admin Dashboard</h2></div><span class="section-note">শুধু Admin</span></div>
     <div class="admin-grid">
