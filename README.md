@@ -22,7 +22,7 @@ The frontend expects these columns:
 - `profiles`: `id`, `role` (Admin role value: `admin`)
 - `orders`: `id`, `user_id`, `product_id`, `product_name`, `player_id`, `payment_method`, `transaction_id`, `price`, `status`, `created_at`
 
-The app intentionally creates seeded packages with price 0 and disabled status; set a real price and activate each package in Admin before customers can order it.
+The seed includes draft Free Fire prices (25/40/85/160/240/320/400/800 BDT for 25/50/115/240/355/480/610/1240 diamonds) and keeps every seeded package disabled. These are suggested starting prices, not verified supplier rates. Review/change them in Admin before activation; set PUBG UC and Subscription prices there as well.
 
 ## Safety before launch
 - Verify RLS policies in Supabase before accepting real orders.
