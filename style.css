@@ -160,3 +160,10 @@ footer{border-top:1px solid var(--line);padding:25px 0;display:flex;align-items:
 #resetPasswordForm{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
 #resetPasswordForm[hidden]{display:none}
 #authForm[hidden]{display:none}
+
+/* Order checkout modal: keep the landing page clean; open only after selecting a package. */
+.order-modal{max-width:520px}
+.order-safety{margin:0 0 18px;padding:12px 14px;font-size:12px;line-height:1.6}
+.order-modal .order-form{gap:13px}
+.order-modal .submit-btn{width:100%}
+.order-modal .form-foot{margin-top:0}
