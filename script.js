@@ -93,12 +93,12 @@
     box.innerHTML="";
     data.forEach(order=>{
       const item=document.createElement("div"); item.className="admin-order";
-      item.innerHTML='<strong>'+escapeHtml(order.product_name||"Package")+'</strong> <span class="status-pill">'+escapeHtml(statusText(order.status))+'</span><br>Player ID: '+escapeHtml(order.player_id)+'<br>Payment: '+escapeHtml(order.payment_method)+'<br>Transaction: '+escapeHtml(order.transaction_id||"—")+'<br>Price: '+escapeHtml(bdt(order.price))+'<br><small>'+escapeHtml(new Date(order.created_at).toLocaleString())+'</small><br><select data-order="'+escapeHtml(order.id)+'"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>';
+      item.innerHTML='<strong>'+escapeHtml(order.product_name||"Package")+'</strong> <span class="status-pill">'+escapeHtml(statusText(order.status))+'</span><br>Order ID: <code>'+escapeHtml(order.id)+'</code><br>Player ID: '+escapeHtml(order.player_id)+'<br>Payment: '+escapeHtml(order.payment_method)+'<br>Transaction: '+escapeHtml(order.transaction_id||"—")+'<br>Price: '+escapeHtml(bdt(order.price))+'<br><small>'+escapeHtml(new Date(order.created_at).toLocaleString())+'</small><br><select data-order="'+escapeHtml(order.id)+'"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="completed">Completed</option></select>';
       const status=item.querySelector("select"); status.value=order.status;
       status.addEventListener("change",async()=>{
         const {error:updateError}=await db.rpc("admin_update_order_status",{p_order_id:order.id,p_status:status.value});
         if(updateError) { showMessage("অর্ডারের অবস্থা পরিবর্তন হয়নি: "+updateError.message); status.value=order.status; }
-        else { order.status=status.value; showMessage("অর্ডারের অবস্থা আপডেট হয়েছে।",true); }
+        else { order.status=status.value; showMessage("অর্ডারের অবস্থা আপডেট হয়েছে।",true); await loadAdminOrders(); }
       });
       box.appendChild(item);
     });
