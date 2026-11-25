@@ -35,7 +35,7 @@
 
   function renderProducts() {
     grid.innerHTML=""; select.innerHTML='<option value="">প্যাকেজ নির্বাচন করুন</option>';
-    const visible=products.filter(p=>p.is_active && (selectedCategory==="all" || p.category===selectedCategory || (selectedCategory==="subscription" && ["membership","pass"].includes(p.category))));
+    const visible=products.filter(p=>p.is_active && (selectedCategory==="all" || p.category===selectedCategory || (selectedCategory==="subscription" && ["membership","pass","weekly","monthly","level_up"].includes(p.category))));
     if(!visible.length) {
       grid.innerHTML='<div class="notice">এখনো কোনো সক্রিয় প্যাকেজ নেই। Admin লগইন করে দাম সেট ও প্যাকেজ চালু করুন।</div>';
       $("productStatus").textContent="প্যাকেজ পাওয়া যায়নি";
@@ -145,7 +145,8 @@
     const payment=$("paymentMethod").value, transactionId=$("transactionId").value.trim();
     if(!/^\d{5,15}$/.test(playerId)){alert("সঠিক Player ID লিখুন (৫–১৫টি সংখ্যা)।");return;}
     if(!product||!product.is_active){alert("সক্রিয় প্যাকেজ নির্বাচন করুন।");return;}
-    if(product.price===null||product.price===undefined){alert("এই প্যাকেজের দাম Admin এখনো নির্ধারণ করেননি।");return;}
+    if(product.price===null||product.price===undefined||Number(product.price)<=0){alert("এই প্যাকেজের দাম Admin এখনো নির্ধারণ করেননি।");return;}
+    if(payment!=="Wallet"&&!transactionId){alert("পেমেন্টের Transaction ID লিখুন।");return;}
     const payload={user_id:currentUser.id,product_id:product.id,product_name:product.name,player_id:playerId,payment_method:payment,transaction_id:transactionId||null,price:product.price,status:"pending"};
     let data,error;
     if(payment==="Wallet") { const response=await db.rpc("create_wallet_order",{p_product_id:product.id,p_player_id:playerId}); error=response.error; data={id:response.data}; }
@@ -170,7 +171,7 @@
     if(!isAdmin){setAdminMessage("Admin access পাওয়া যায়নি।");return;}
     const selected=$("editProduct").value;
     const payload={name:$("productName").value.trim(),category:$("productCategory").value,diamonds:$("productDiamonds").value?Number($("productDiamonds").value):null,price:Number($("productPrice").value),is_active:$("productActive").checked};
-    if(!payload.name||!Number.isFinite(payload.price)||payload.price<0){setAdminMessage("নাম ও সঠিক দাম দিন।");return;}
+    if(!payload.name||!Number.isFinite(payload.price)||payload.price<=0){setAdminMessage("নাম ও ০-এর বেশি সঠিক দাম দিন।");return;}
     const query=selected?db.from("products").update(payload).eq("id",selected):db.from("products").insert(payload);
     const {error}=await query;
     if(error){setAdminMessage("সেভ হয়নি: "+error.message);return;}
