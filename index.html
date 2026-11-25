@@ -52,7 +52,7 @@
     </form>
   </section>
   <section class="result-card" id="orderResult" hidden aria-live="polite"></section>
-  <section class="section codes-section" id="myCodes"><div class="section-heading"><div><span class="eyebrow">DIGITAL REWARDS</span><h2>আমার কোড</h2></div></div><div class="notice">অর্ডার সম্পন্ন হলে আপনার ডিজিটাল কোড এখানে দেখানো হবে। কোড ফিচার পরবর্তী ধাপে চালু হবে।</div></section>
+  <section class="section codes-section" id="myCodes"><div class="section-heading"><div><span class="eyebrow">DIGITAL REWARDS</span><h2>আমার কোড</h2></div></div><div id="userCodes" class="code-list"><div class="notice">অর্ডার সম্পন্ন হলে Admin আপনার কোড এখানে যোগ করবেন।</div></div></section>
 
   <div class="modal-backdrop" id="loginModal" hidden>
     <section class="account-modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
@@ -75,8 +75,13 @@
       <div class="wallet-card"><span>ওয়ালেট ব্যালেন্স</span><strong id="walletBalance">৳ 0</strong><small>টপ-আপ অনুমোদনের পর ব্যালেন্সে যোগ হবে</small></div>
       <div class="wallet-add">
         <h3>ব্যালেন্স যোগ করুন</h3>
-        <p class="modal-description">টাকা যোগ করার অনুরোধ ও পেমেন্ট যাচাইয়ের ব্যবস্থা পরবর্তী ধাপে চালু করা হবে।</p>
-        <button class="secondary-btn" type="button" id="addBalanceBtn">টাকা যোগ করার নিয়ম</button>
+        <form id="walletForm" class="order-form">
+          <label>টাকার পরিমাণ (৳)<input id="walletAmount" type="number" min="50" max="50000" step="1" placeholder="কমপক্ষে ৫০ টাকা" required></label>
+          <label>পেমেন্ট মাধ্যম<select id="walletMethod" required><option value="">নির্বাচন করুন</option><option>bKash</option><option>Nagad</option><option>Rocket</option></select></label>
+          <label>Transaction ID<input id="walletTransaction" required placeholder="পেমেন্টের Transaction ID"></label>
+          <button class="primary-btn" type="submit">টপ-আপ অনুরোধ পাঠান</button>
+          <p class="form-foot">শুধু যাচাইকৃত অফিসিয়াল পেমেন্ট নির্দেশনা পাওয়ার পর টাকা পাঠাবেন।</p>
+        </form>
         <p class="form-foot" id="walletMessage"></p>
       </div>
       <div class="history-area"><div class="history-heading"><h3>অর্ডার হিস্টোরি</h3><span id="completedCount">0টি সম্পন্ন</span></div><div id="orderHistory" class="order-history">অর্ডার লোড হচ্ছে…</div></div>
@@ -103,6 +108,15 @@
       <div class="admin-box">
         <h3>সাম্প্রতিক অর্ডার</h3>
         <div id="adminOrders" class="admin-orders">অর্ডার লোড হচ্ছে…</div>
+        <h3 class="admin-subheading">Add Money অনুরোধ</h3><div id="adminTopups" class="admin-orders">লোড হচ্ছে…</div>
+        <h3 class="admin-subheading">অর্ডারে ডিজিটাল কোড যোগ</h3>
+        <form id="codeForm" class="order-form">
+          <label>Order ID<input id="codeOrderId" required placeholder="অর্ডারের UUID"></label>
+          <label>Digital Code<input id="codeValue" required placeholder="কোড লিখুন"></label>
+          <button class="primary-btn" type="submit">কোড অ্যাসাইন করুন</button>
+          <p class="form-foot" id="codeMessage"></p>
+        </form>
+        <h3 class="admin-subheading">কোড ইনভেন্টরি</h3><div id="adminCodes" class="admin-orders">লোড হচ্ছে…</div>
       </div>
     </div>
   </section>
