@@ -35,6 +35,7 @@
     </section>
 
     <section class="section" id="packages">
+      <div class="category-tabs" role="tablist" aria-label="পণ্যের ধরন"><button class="category-tab active" data-filter="all" type="button">সব</button><button class="category-tab" data-filter="diamond" type="button">Free Fire</button><button class="category-tab" data-filter="pubg" type="button">PUBG UC</button><button class="category-tab" data-filter="subscription" type="button">Subscriptions</button></div>
       <div class="section-heading"><div><span class="eyebrow">CHOOSE YOUR TOP-UP</span><h2>ডায়মন্ড প্যাকেজ</h2></div><span class="section-note" id="productStatus">প্যাকেজ লোড হচ্ছে…</span></div>
       <div class="package-grid" id="packageGrid"></div>
   </section>
@@ -51,6 +52,7 @@
     </form>
   </section>
   <section class="result-card" id="orderResult" hidden aria-live="polite"></section>
+  <section class="section codes-section" id="myCodes"><div class="section-heading"><div><span class="eyebrow">DIGITAL REWARDS</span><h2>আমার কোড</h2></div></div><div class="notice">অর্ডার সম্পন্ন হলে আপনার ডিজিটাল কোড এখানে দেখানো হবে। কোড ফিচার পরবর্তী ধাপে চালু হবে।</div></section>
 
   <div class="modal-backdrop" id="loginModal" hidden>
     <section class="account-modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
@@ -89,7 +91,7 @@
         <form id="productForm" class="order-form">
           <label>বিদ্যমান প্যাকেজ (আপডেট করতে)<select id="editProduct"><option value="">নতুন প্যাকেজ তৈরি</option></select></label>
           <label>প্যাকেজের নাম<input id="productName" required placeholder="যেমন: 100 Diamonds"></label>
-          <label>ধরন<select id="productCategory"><option value="diamond">Diamond</option><option value="membership">Membership</option><option value="pass">Level Up Pass</option></select></label>
+          <label>ধরন<select id="productCategory"><option value="diamond">Free Fire Diamond</option><option value="pubg">PUBG UC</option><option value="subscription">Subscription</option><option value="membership">Membership</option><option value="pass">Level Up Pass</option></select></label>
           <label>ডায়মন্ড সংখ্যা (Membership/Pass হলে ফাঁকা)<input id="productDiamonds" type="number" min="0" placeholder="100"></label>
           <label>দাম (BDT)<input id="productPrice" type="number" min="0" step="1" required placeholder="৳"></label>
           <label class="check-label"><input id="productActive" type="checkbox" checked> প্যাকেজ চালু থাকবে</label>
@@ -107,6 +109,7 @@
   <div class="result-card" id="siteMessage" hidden aria-live="polite"></div>
   </main>
 
+  <nav class="bottom-nav" aria-label="প্রধান নেভিগেশন"><a href="#" class="bottom-nav-item active"><span>⌂</span>হোম</a><a href="#profileModal" class="bottom-nav-item" id="navOrders"><span>▤</span>অর্ডার</a><a href="#profileModal" class="bottom-nav-item" id="navWallet"><span>৳</span>Add Money</a><a href="#myCodes" class="bottom-nav-item"><span>▣</span>কোড</a><button class="bottom-nav-item" type="button" id="navAccount"><span>♙</span>অ্যাকাউন্ট</button></nav>
   <footer><a class="brand footer-brand" href="#"><span class="brand-mark">X</span><span>DIAMOND<span class="accent">X</span> <small>BD</small></span></a><p>© <span id="year"></span> DiamondX BD. All rights reserved.</p><span class="footer-tag">GAME ON. GLOW ON.</span></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
